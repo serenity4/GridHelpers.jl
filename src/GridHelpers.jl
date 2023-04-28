@@ -18,7 +18,10 @@ function Base.getproperty(point::GridPoint, name::Symbol)
 end
 
 """
-Cell defined by four corner points.
+Cell defined by four corner points around coordinates `(x, y)`. `(x, y)` should be floating-point indices
+associated to 1-based arrays, i.e. the rounded value of `x` and `y` should be an integer-valued grid index.
+
+Iteration order is defined as follows: bottom left, bottom right, top left, top right.
 """
 struct Cell
   bottom_left::GridPoint
@@ -42,6 +45,13 @@ function Cell((x, y))
   Cell((i, j), (i + 1, j), (i + 1, j + 1), (i, j + 1))
 end
 
+"""
+Return bilinear weights from all four corners, in cell iteration order.
+Extracting bilinear weights with this function may be useful when they are to be combined with other weights.
+
+!!! note
+    If you want to interpolate a value directly, use `interpolate_bilinear` which will be much faster.
+"""
 function bilinear_weights(cell::Cell, (x, y))
   (cx, cy) = cell.bottom_left
   w1 = (-(x - (1 + cx)) * -(y - (1 + cy)))
@@ -51,12 +61,29 @@ function bilinear_weights(cell::Cell, (x, y))
   (w1, w2, w3, w4)
 end
 
-function interpolate_bilinear(A, position)
-  cell = Cell(position)
-  weights = bilinear_weights(cell, position)
-  sum(i -> A[cell[i]] * weights[i], 1:4; init = zero(eltype(A)))
+"""
+Perform a bilinear interpolation of `A` at location `(x, y)`.
+
+If the cell is provided, 
+"""
+function interpolate_bilinear(A, location, cell::Cell = Cell(location))
+  (x, y) = location
+  cx, cy = cell.bottom_left
+  nx0 = lerp(A[cell.bottom_left], A[cell.bottom_right], x - cx)
+  nx1 = lerp(A[cell.top_left], A[cell.top_right], x - cx)
+  lerp(nx0, nx1, y - cy)
 end
 
-export GridPoint, Cell, interpolate_bilinear, bilinear_weights
+lerp(x, y, w) = x * (1 - w) + y * w
+
+function estimate_gradient(A, location, cell::Cell = Cell(location))
+  (x, y) = location
+  cx, cy = cell.bottom_left
+  gx = lerp(A[cell.bottom_right] - A[cell.bottom_left], A[cell.top_right] - A[cell.top_left], x - cx)
+  gy = lerp(A[cell.top_right] - A[cell.bottom_right], A[cell.top_left] - A[cell.bottom_left], y - cy)
+  (gx, gy)
+end
+
+export GridPoint, Cell, interpolate_bilinear, bilinear_weights, nearest, estimate_gradient
 
 end

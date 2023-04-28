@@ -19,6 +19,7 @@ using Test
         weights = bilinear_weights(cell, position)
         @test weights[1] == 1.0
         @test sum(weights) == 1
+        @test nearest((4.3, 6.9)) == (4, 7)
         @test all(≥(0), weights)
         weights = bilinear_weights(cell, position .+ 0.5)
         @test all(==(0.25), weights)
@@ -32,5 +33,6 @@ using Test
         @test interpolate_bilinear(A, (4.3, 6.1)) == 1.0
         A = rand(512, 512)
         @test 0 ≤ interpolate_bilinear(A, (4.3, 6.1)) ≤ 1.0
+        @test estimate_gradient(A, (4.3, 6.1)) isa Tuple{Float64,Float64}
     end
 end;

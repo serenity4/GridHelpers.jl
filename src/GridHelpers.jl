@@ -39,9 +39,10 @@ Base.setindex!(A::AbstractArray, value, point::GridPoint) = A[point[]...] = valu
 
 nearest((x, y)) = Int.(round.((x, y)))
 
-Cell(x, y) = Cell((x, y))
+Cell(x::Number, y::Number) = Cell((x, y))
+Cell(position, bounds) = Cell(ifelse.(position .≥ bounds, position .- 1, position))
 function Cell((x, y))
-  (i, j) = Int.(floor.((x, y)))
+  (i, j) = floor.(Int, (x, y))
   Cell((i, j), (i + 1, j), (i + 1, j + 1), (i, j + 1))
 end
 

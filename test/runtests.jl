@@ -34,5 +34,10 @@ using Test
         A = rand(512, 512)
         @test 0 ≤ interpolate_bilinear(A, (4.3, 6.1)) ≤ 1.0
         @test estimate_gradient(A, (4.3, 6.1)) isa Tuple{Float64,Float64}
+
+        cell = Cell((30, 40))
+        @test cell == Cell((30.1, 40.1))
+        cell = Cell((30, 40), (30, 40))
+        @test cell == Cell((29, 39))
     end
 end;

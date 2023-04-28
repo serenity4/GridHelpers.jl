@@ -1,0 +1,3 @@
+var documenterSearchIndex = {"docs":
+[{"location":"","page":"Home","title":"Home","text":"CurrentModule = GridHelpers","category":"page"},{"location":"#GridHelpers","page":"Home","title":"GridHelpers","text":"","category":"section"},{"location":"","page":"Home","title":"Home","text":"Documentation for GridHelpers.","category":"page"},{"location":"","page":"Home","title":"Home","text":"","category":"page"},{"location":"","page":"Home","title":"Home","text":"Modules = [GridHelpers]","category":"page"},{"location":"#GridHelpers.Cell","page":"Home","title":"GridHelpers.Cell","text":"Cell defined by four corner points.\n\n\n\n\n\n","category":"type"}]
+}

@@ -1,0 +1,13 @@
+name = "GridHelpers"
+uuid = "b96441d5-4525-4e55-9909-ccff87bff6f6"
+authors = ["Cédric BELMANT"]
+version = "0.1.0"
+
+[compat]
+julia = "1.8"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

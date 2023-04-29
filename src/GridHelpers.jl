@@ -10,10 +10,10 @@ Base.length(point::GridPoint) = length(point[])
 Base.convert(::Type{GridPoint}, coords::Tuple{Int,Int}) = GridPoint(coords)
 
 function Base.getproperty(point::GridPoint, name::Symbol)
-  name === :bottom && return point .+ (0, -1)
-  name === :top && return point .+ (0, 1)
-  name === :left && return point .+ (0, -1)
-  name === :right && return point .+ (0, 1)
+  name === :bottom && return GridPoint(point[] .+ (0, -1))
+  name === :top && return GridPoint(point[] .+ (0, 1))
+  name === :left && return GridPoint(point[] .+ (0, -1))
+  name === :right && return GridPoint(point[] .+ (0, 1))
   getfield(point, name)
 end
 

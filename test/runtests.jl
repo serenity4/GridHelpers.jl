@@ -6,6 +6,7 @@ using Test
         point = GridPoint((5, 5))
         @test collect(point) == [5, 5]
         @test point[] == (5, 5)
+        @test point.top === GridPoint((5, 6))
     end
 
     @testset "Cell" begin

@@ -3,8 +3,10 @@ module GridHelpers
 struct GridPoint
   coords::Tuple{Int,Int}
 end
+GridPoint(i, j) = GridPoint((i, j))
 
 Base.getindex(point::GridPoint) = point.coords
+Base.getindex(point::GridPoint, i) = getindex(point[], i)
 Base.iterate(point::GridPoint, args...) = iterate(point[], args...)
 Base.length(point::GridPoint) = length(point[])
 Base.convert(::Type{GridPoint}, coords::Tuple{Int,Int}) = GridPoint(coords)
@@ -16,6 +18,9 @@ function Base.getproperty(point::GridPoint, name::Symbol)
   name === :right && return GridPoint(point[] .+ (0, 1))
   getfield(point, name)
 end
+
+neighbor(point::GridPoint, i) = i == 1 ? point.left : i == 2 ? point.right : i == 3 ? point.bottom : point.top
+is_outside_grid(point::GridPoint, (ni, nj)) = point[1] in (0, ni) || point[2] in (0, nj)
 
 """
 Cell defined by four corner points around coordinates `(x, y)`. `(x, y)` should be floating-point indices
@@ -85,6 +90,6 @@ function estimate_gradient(A, location, cell::Cell = Cell(location))
   (gx, gy)
 end
 
-export GridPoint, Cell, interpolate_bilinear, bilinear_weights, nearest, estimate_gradient
+export GridPoint, Cell, interpolate_bilinear, bilinear_weights, nearest, estimate_gradient, neighbor, is_outside_grid
 
 end

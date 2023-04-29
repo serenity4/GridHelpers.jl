@@ -7,6 +7,9 @@ using Test
         @test collect(point) == [5, 5]
         @test point[] == (5, 5)
         @test point.top === GridPoint((5, 6))
+        @test neighbor(point, 3) == point.bottom
+        @test is_outside_grid(point, ((5, 5)))
+        @test is_outside_grid(point, ((5, 6)))
     end
 
     @testset "Cell" begin

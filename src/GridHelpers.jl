@@ -20,7 +20,7 @@ function Base.getproperty(point::GridPoint, name::Symbol)
 end
 
 neighbor(point::GridPoint, i) = i == 1 ? point.left : i == 2 ? point.right : i == 3 ? point.bottom : point.top
-is_outside_grid(point::GridPoint, (ni, nj)) = point[1] in (0, ni) || point[2] in (0, nj)
+is_outside_grid(point::GridPoint, (ni, nj)) = point[1] in (0, ni + 1) || point[2] in (0, nj + 1)
 
 """
 Cell defined by four corner points around coordinates `(x, y)`. `(x, y)` should be floating-point indices

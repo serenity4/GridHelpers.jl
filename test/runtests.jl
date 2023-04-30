@@ -8,8 +8,11 @@ using Test
         @test point[] == (5, 5)
         @test point.top === GridPoint((5, 6))
         @test neighbor(point, 3) == point.bottom
-        @test is_outside_grid(point, ((5, 5)))
-        @test is_outside_grid(point, ((5, 6)))
+        grid_size = (5, 6)
+        @test !is_outside_grid(GridPoint((1, 1)), grid_size)
+        @test is_outside_grid(GridPoint((1, 0)), grid_size)
+        @test !is_outside_grid(GridPoint(grid_size), grid_size)
+        @test is_outside_grid(GridPoint((6, 6)), grid_size)
     end
 
     @testset "Cell" begin

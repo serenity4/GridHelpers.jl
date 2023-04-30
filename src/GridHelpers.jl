@@ -12,15 +12,22 @@ Base.length(point::GridPoint) = length(point[])
 Base.convert(::Type{GridPoint}, coords::Tuple{Int,Int}) = GridPoint(coords)
 
 function Base.getproperty(point::GridPoint, name::Symbol)
+  name === :left && return GridPoint(point[] .+ (-1, 0))
+  name === :right && return GridPoint(point[] .+ (1, 0))
   name === :bottom && return GridPoint(point[] .+ (0, -1))
   name === :top && return GridPoint(point[] .+ (0, 1))
-  name === :left && return GridPoint(point[] .+ (0, -1))
-  name === :right && return GridPoint(point[] .+ (0, 1))
   getfield(point, name)
 end
 
 neighbor(point::GridPoint, i) = i == 1 ? point.left : i == 2 ? point.right : i == 3 ? point.bottom : point.top
 is_outside_grid(point::GridPoint, (ni, nj)) = point[1] in (0, ni + 1) || point[2] in (0, nj + 1)
+
+# Centered finite-difference method with a spatial step of 1.
+function estimate_gradient(A, point::GridPoint, (ni, nj))
+  sx = point[1] in (1, ni) ? 0.0 : lerp(A[point.left], A[point], 0.5) - lerp(A[point], A[point.right], 0.5)
+  sy = point[2] in (1, nj) ? 0.0 : lerp(A[point.bottom], A[point], 0.5) - lerp(A[point], A[point.top], 0.5)
+  (sx, sy)
+end
 
 """
 Cell defined by four corner points around coordinates `(x, y)`. `(x, y)` should be floating-point indices

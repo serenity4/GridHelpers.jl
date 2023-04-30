@@ -6,6 +6,9 @@ using Test
         point = GridPoint((5, 5))
         @test collect(point) == [5, 5]
         @test point[] == (5, 5)
+        @test point.left === GridPoint((4, 5))
+        @test point.right === GridPoint((6, 5))
+        @test point.bottom === GridPoint((5, 4))
         @test point.top === GridPoint((5, 6))
         @test neighbor(point, 3) == point.bottom
         grid_size = (5, 6)
@@ -41,6 +44,7 @@ using Test
         A = rand(512, 512)
         @test 0 ≤ interpolate_bilinear(A, (4.3, 6.1)) ≤ 1.0
         @test estimate_gradient(A, (4.3, 6.1)) isa Tuple{Float64,Float64}
+        @test estimate_gradient(A, GridPoint(4, 6), size(A)) isa Tuple{Float64,Float64}
 
         cell = Cell((30, 40))
         @test cell == Cell((30.1, 40.1))

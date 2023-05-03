@@ -22,6 +22,8 @@ end
 neighbor(point::GridPoint, i) = i == 1 ? point.left : i == 2 ? point.right : i == 3 ? point.bottom : point.top
 is_outside_grid(point, (ni, nj)) = !is_inside_grid(point, (ni, nj))
 is_inside_grid((x, y), (ni, nj)) = 1 ≤ x ≤ ni && 1 ≤ y ≤ nj
+materialize_grid((ni, nj)) = [GridPoint(i, j) for i in 1:ni, j in 1:nj]
+materialize_grid(A::AbstractMatrix) = materialize_grid(size(A))
 
 # Centered finite-difference method with a spatial step of 1.
 function estimate_gradient(A, point::GridPoint, (ni, nj))
@@ -98,6 +100,6 @@ function estimate_gradient(A, location, cell::Cell = Cell(location))
   (gx, gy)
 end
 
-export GridPoint, Cell, interpolate_bilinear, bilinear_weights, nearest, estimate_gradient, neighbor, is_inside_grid, is_outside_grid
+export GridPoint, Cell, interpolate_bilinear, bilinear_weights, nearest, estimate_gradient, neighbor, is_inside_grid, is_outside_grid, materialize_grid
 
 end

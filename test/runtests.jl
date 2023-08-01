@@ -17,6 +17,8 @@ using Test
         @test is_outside_grid(GridPoint((1, 0)), grid_size)
         @test !is_outside_grid(GridPoint(grid_size), grid_size)
         @test is_outside_grid(GridPoint((6, 6)), grid_size)
+        @test neighbors(point)[2] == point.right
+        @test neighbors(point, EightNeighbors())[3] == point.bottom.left
     end
 
     @testset "Cell" begin

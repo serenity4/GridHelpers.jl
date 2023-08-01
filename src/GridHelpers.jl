@@ -1,5 +1,12 @@
 module GridHelpers
 
+using StaticArrays
+
+"""
+Point on a grid.
+
+This is not a cell, which represents a whole face and not a vertex.
+"""
 struct GridPoint
   coords::Tuple{Int,Int}
 end
@@ -31,6 +38,16 @@ function estimate_gradient(A, point::GridPoint, (ni, nj))
   sy = point[2] in (1, nj) ? 0.0 : lerp(A[point.bottom], A[point], 0.5) - lerp(A[point], A[point.top], 0.5)
   (sx, sy)
 end
+
+abstract type Neighborhood end
+"Four closest points, directly adjacent to the current grid point."
+struct FourNeighbors <: Neighborhood end
+"Eight closest points, including the four closest plus the slightly farthest grid point corners."
+struct EightNeighbors <: Neighborhood end
+
+neighbors(point::GridPoint) = neighbors(point, FourNeighbors())
+neighbors(point::GridPoint, ::FourNeighbors) = @SVector [point.left, point.right, point.bottom, point.top]
+neighbors(point::GridPoint, ::EightNeighbors) = @SVector [point.top.left, point.left, point.bottom.left, point.bottom, point.bottom.right, point.right, point.top.right, point.top]
 
 """
 Cell defined by four corner points around coordinates `(x, y)`. `(x, y)` should be floating-point indices
@@ -100,6 +117,15 @@ function estimate_gradient(A, location, cell::Cell = Cell(location))
   (gx, gy)
 end
 
-export GridPoint, Cell, interpolate_bilinear, bilinear_weights, nearest, estimate_gradient, neighbor, is_inside_grid, is_outside_grid, materialize_grid
+export
+  GridPoint,
+  FourNeighbors, EightNeighbors, neighbors, neighbor,
+  is_inside_grid, is_outside_grid,
+  Cell,
+  interpolate_bilinear,
+  bilinear_weights,
+  nearest,
+  estimate_gradient,
+  materialize_grid
 
 end

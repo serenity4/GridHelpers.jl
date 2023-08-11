@@ -1,7 +1,7 @@
 name = "GridHelpers"
 uuid = "b96441d5-4525-4e55-9909-ccff87bff6f6"
 authors = ["Cédric BELMANT"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"

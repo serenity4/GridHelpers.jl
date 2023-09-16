@@ -26,6 +26,11 @@ function Base.getproperty(point::GridPoint, name::Symbol)
   getfield(point, name)
 end
 
+Base.getindex(A::AbstractArray, point::GridPoint) = A[point[]...]
+Base.getindex(A, point::GridPoint) = A[point[]...]
+Base.setindex!(A::AbstractArray, value, point::GridPoint) = A[point[]...] = value
+Base.setindex!(A, value, point::GridPoint) = A[point[]...] = value
+
 neighbor(point::GridPoint, i) = i == 1 ? point.left : i == 2 ? point.right : i == 3 ? point.bottom : point.top
 is_outside_grid(point, (ni, nj)) = !is_inside_grid(point, (ni, nj))
 is_inside_grid((x, y), (ni, nj)) = 1 ≤ x ≤ ni && 1 ≤ y ≤ nj
@@ -65,9 +70,6 @@ end
 Base.length(::Cell) = 4
 Base.iterate(cell::Cell, args...) = iterate((cell.bottom_left, cell.bottom_right, cell.top_left, cell.top_right), args...)
 Base.getindex(cell::Cell, i) = iterate(cell, i)[1]
-
-Base.getindex(A::AbstractArray, point::GridPoint) = A[point[]...]
-Base.setindex!(A::AbstractArray, value, point::GridPoint) = A[point[]...] = value
 
 nearest((x, y)) = Int.(round.((x, y)))
 

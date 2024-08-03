@@ -1,11 +1,12 @@
 using GridHelpers
+using StaticArrays
 using Test
 
 @testset "GridHelpers.jl" begin
     @testset "Grid points" begin
         point = GridPoint((5, 5))
         @test collect(point) == [5, 5]
-        @test point[] == (5, 5)
+        @test point[] == @SVector [5, 5]
         @test point.left === GridPoint((4, 5))
         @test point.right === GridPoint((6, 5))
         @test point.bottom === GridPoint((5, 4))
@@ -19,15 +20,19 @@ using Test
         @test is_outside_grid(GridPoint((6, 6)), grid_size)
         @test neighbors(point)[2] == point.right
         @test neighbors(point, EightNeighbors())[3] == point.bottom.left
+
+        point = GridPoint(@SVector UInt32[5, 6])
+        @test point.left === GridPoint(@SVector UInt32[4, 6])
+        @test neighbor(point, 3) === point.bottom
     end
 
     @testset "Cell" begin
         position = (20.0, 30.0)
-        cell = Cell(position)
-        @test cell.bottom_left == GridPoint(position)
-        @test cell.bottom_right == GridPoint(position .+ (1, 0))
-        @test cell.top_left == GridPoint(position .+ (0, 1))
-        @test cell.top_right == GridPoint(position .+ 1)
+        cell = Cell{UInt32}(position)
+        @test cell.bottom_left === GridPoint{UInt32}(position)
+        @test cell.bottom_right === GridPoint{UInt32}(position .+ (1, 0))
+        @test cell.top_left === GridPoint{UInt32}(position .+ (0, 1))
+        @test cell.top_right === GridPoint{UInt32}(position .+ 1)
         @test collect(cell) == [cell[1], cell[2], cell[3], cell[4]]
         weights = bilinear_weights(cell, position)
         @test weights[1] == 1.0
@@ -49,9 +54,9 @@ using Test
         @test estimate_gradient(A, (4.3, 6.1)) isa Tuple{Float64,Float64}
         @test estimate_gradient(A, GridPoint(4, 6), size(A)) isa Tuple{Float64,Float64}
 
-        cell = Cell((30, 40))
-        @test cell == Cell((30.1, 40.1))
-        cell = Cell((30, 40), (30, 40))
-        @test cell == Cell((29, 39))
+        cell = Cell{UInt32}((30, 40))
+        @test cell == Cell{UInt32}((30.1, 40.1))
+        cell = Cell{UInt32}((30, 40), (30, 40))
+        @test cell == Cell{UInt32}((29, 39))
     end
 end;

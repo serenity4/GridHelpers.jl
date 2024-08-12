@@ -1,6 +1,7 @@
 module GridHelpers
 
 using StaticArrays
+using PrecompileTools
 
 """
 Point on a grid.
@@ -29,10 +30,12 @@ function Base.getproperty(point::GridPoint{T}, name::Symbol) where {T}
   getfield(point, name)
 end
 
-Base.getindex(A::AbstractArray, point::GridPoint) = A[point[]...]
-Base.getindex(A, point::GridPoint) = A[point[]...]
-Base.setindex!(A::AbstractArray, value, point::GridPoint) = A[point[]...] = value
-Base.setindex!(A, value, point::GridPoint) = A[point[]...] = value
+@recompile_invalidations begin
+  Base.getindex(A::AbstractArray, point::GridPoint) = A[point[]...]
+  Base.getindex(A, point::GridPoint) = A[point[]...]
+  Base.setindex!(A::AbstractArray, value, point::GridPoint) = A[point[]...] = value
+  Base.setindex!(A, value, point::GridPoint) = A[point[]...] = value
+end
 
 neighbor(point::GridPoint{T}, i) where {T} = i == T(1) ? point.left : i == T(2) ? point.right : i == T(3) ? point.bottom : point.top
 is_outside_grid(point, (ni, nj)) = !is_inside_grid(point, (ni, nj))

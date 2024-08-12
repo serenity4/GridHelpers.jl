@@ -1,6 +1,6 @@
 name = "GridHelpers"
 uuid = "b96441d5-4525-4e55-9909-ccff87bff6f6"
-version = "0.1.4"
+version = "0.1.5"
 authors = ["Cédric BELMANT"]
 
 [deps]
